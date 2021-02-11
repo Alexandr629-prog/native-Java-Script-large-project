@@ -1,7 +1,8 @@
 const modals = () => 
 {
+    let btnPressed = false;
    
-    function bindModal(triggerSelector, modalSelector, closeSelector, closeClickOverlay = true) {
+    function bindModal(triggerSelector, modalSelector, closeSelector, destroy = false) {
         const trigger = document.querySelectorAll(triggerSelector),
               modal = document.querySelector(modalSelector),
               close = document.querySelector(closeSelector),
@@ -12,11 +13,16 @@ const modals = () =>
             item.addEventListener('click', (e) => {
                 if (e.target) {
                     e.preventDefault();
+                    btnPressed = true;
+                }
+
+                if(destroy){
+                    item.remove();
                 }
 
                 windows.forEach(item => {
-
                     item.style.display = 'none';
+                    item.classList.add('animated', 'fadeIn');
                 });
     
                 modal.style.display = "block";
@@ -26,18 +32,19 @@ const modals = () =>
         });
 
         close.addEventListener('click', () => {
-            // windows.forEach(item => {
-            //     item.style.display = 'none';
-            // });
+            windows.forEach(item => {
+                item.style.display = 'none';
+            });
             modal.style.display = "none";
             document.body.style.overflow = "";
             document.body.style.marginRight = `0px`;
         });
 
         modal.addEventListener('click', (e) => {
-            if (e.target === modal && closeClickOverlay) {
+            if (e.target === modal) {
                 windows.forEach(item => {
-                    item.style.display = 'none';    
+                    item.style.display = 'none';   
+
                 });
                 document.body.style.marginRight = `0px`;
                 modal.style.display = "none";
@@ -53,6 +60,9 @@ const modals = () =>
             document.querySelectorAll('[data-modal]').forEach(item =>{
                 if(getComputedStyle(item).display !== 'none'){
                     display = 'block';
+                    document.body.style.overflow = "hidden";
+                    let scroll = calcScroll();
+                    document.body.style.marginRight = `${scroll}px`;
                 } 
             });
             if(!display){
@@ -62,6 +72,16 @@ const modals = () =>
 
             
         }, time);
+    }
+
+    function showModalByScroll(selector){
+            window.addEventListener('scroll', ()=>{
+                let scrollHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+
+                if(!btnPressed && (window.pageYOffset+document.documentElement.clientHeight +1 >= scrollHeight)){
+                    document.querySelector(selector).click();
+                }
+            });
     }
 
     function calcScroll(){
@@ -81,8 +101,13 @@ const modals = () =>
 
     bindModal('.button-design', '.popup-design', '.popup-design .popup-close');
     bindModal('.button-consultation', '.popup-consultation', '.popup-consultation .popup-close' );
-    showModalByTime('.popup-consultation', 3000);
+    //showModalByTime('.popup-consultation', 3000);
+    bindModal('.fixed-gift', '.popup-gift', '.popup-gift .popup-close', true);
+    showModalByScroll('.fixed-gift');
+
 
 };
 
 export default modals;
+
+

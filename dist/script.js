@@ -954,8 +954,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var modals = function modals() {
+  var btnPressed = false;
+
   function bindModal(triggerSelector, modalSelector, closeSelector) {
-    var closeClickOverlay = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+    var destroy = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
     var trigger = document.querySelectorAll(triggerSelector),
         modal = document.querySelector(modalSelector),
         close = document.querySelector(closeSelector),
@@ -965,10 +967,16 @@ var modals = function modals() {
       item.addEventListener('click', function (e) {
         if (e.target) {
           e.preventDefault();
+          btnPressed = true;
+        }
+
+        if (destroy) {
+          item.remove();
         }
 
         windows.forEach(function (item) {
           item.style.display = 'none';
+          item.classList.add('animated', 'fadeIn');
         });
         modal.style.display = "block";
         document.body.style.overflow = "hidden";
@@ -976,15 +984,15 @@ var modals = function modals() {
       });
     });
     close.addEventListener('click', function () {
-      // windows.forEach(item => {
-      //     item.style.display = 'none';
-      // });
+      windows.forEach(function (item) {
+        item.style.display = 'none';
+      });
       modal.style.display = "none";
       document.body.style.overflow = "";
       document.body.style.marginRight = "0px";
     });
     modal.addEventListener('click', function (e) {
-      if (e.target === modal && closeClickOverlay) {
+      if (e.target === modal) {
         windows.forEach(function (item) {
           item.style.display = 'none';
         });
@@ -1001,6 +1009,9 @@ var modals = function modals() {
       document.querySelectorAll('[data-modal]').forEach(function (item) {
         if (getComputedStyle(item).display !== 'none') {
           display = 'block';
+          document.body.style.overflow = "hidden";
+          var scroll = calcScroll();
+          document.body.style.marginRight = "".concat(scroll, "px");
         }
       });
 
@@ -1009,6 +1020,16 @@ var modals = function modals() {
         document.body.style.overflow = "hidden";
       }
     }, time);
+  }
+
+  function showModalByScroll(selector) {
+    window.addEventListener('scroll', function () {
+      var scrollHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+
+      if (!btnPressed && window.pageYOffset + document.documentElement.clientHeight + 1 >= scrollHeight) {
+        document.querySelector(selector).click();
+      }
+    });
   }
 
   function calcScroll() {
@@ -1024,8 +1045,10 @@ var modals = function modals() {
   }
 
   bindModal('.button-design', '.popup-design', '.popup-design .popup-close');
-  bindModal('.button-consultation', '.popup-consultation', '.popup-consultation .popup-close');
-  showModalByTime('.popup-consultation', 3000);
+  bindModal('.button-consultation', '.popup-consultation', '.popup-consultation .popup-close'); //showModalByTime('.popup-consultation', 3000);
+
+  bindModal('.fixed-gift', '.popup-gift', '.popup-gift .popup-close', true);
+  showModalByScroll('.fixed-gift');
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (modals);
