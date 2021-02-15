@@ -5,8 +5,7 @@ const webpack = require("webpack-stream");
 const browsersync = require("browser-sync");
 
 //const dist = "./dist/";
-const dist = '../../../../MAMP/htdocs/picture_mamp/';
-
+const dist = "../../../../MAMP/htdocs/picture_mamp/"; // Тут адрес к вашему серверу
 
 gulp.task("copy-html", () => {
     return gulp.src("./src/index.html")

@@ -17,7 +17,7 @@ const showMoreStyles = (trigger, wrapper) => {
     // });
 
     btn.addEventListener('click', function(){
-        getResourse('assets/db.json')
+        getResourse('http://localhost:3000/style')
         .then(res => {
             this.remove();
             createCards(res.styles);
@@ -47,7 +47,7 @@ const showMoreStyles = (trigger, wrapper) => {
     function faildResponsse(){
         let fail = document.createElement('div');
         fail.classList.add('animated', 'fadeInUp', 'status');
-        fail.textContent = 'что-то пошло не так...';
+        fail.textContent = "Что-то пошло не так...";
         document.querySelector(wrapper).appendChild(fail);
     }
 };
