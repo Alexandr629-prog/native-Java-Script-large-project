@@ -4,8 +4,9 @@ const gulp = require("gulp");
 const webpack = require("webpack-stream");
 const browsersync = require("browser-sync");
 
-const dist ='../../../../MAMP/htdocs/picture_mamp/';
 //const dist = "./dist/";
+const dist = '../../../../MAMP/htdocs/picture_mamp/';
+
 
 gulp.task("copy-html", () => {
     return gulp.src("./src/index.html")
